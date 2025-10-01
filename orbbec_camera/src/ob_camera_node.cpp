@@ -62,6 +62,7 @@ OBCameraNode::OBCameraNode(rclcpp::Node *node, std::shared_ptr<ob::Device> devic
 #if defined(USE_RK_HW_DECODER)
   jpeg_decoder_ = std::make_unique<RKJPEGDecoder>(width_[COLOR], height_[COLOR]);
 #elif defined(USE_NV_HW_DECODER)
+  RCLCPP_INFO_STREAM(logger_, "--- RUNNING JetsonNvJPEGDecoder! ---");
   jpeg_decoder_ = std::make_unique<JetsonNvJPEGDecoder>(width_[COLOR], height_[COLOR]);
 #endif
   if (enable_d2c_viewer_) {
@@ -996,11 +997,11 @@ void OBCameraNode::setupDepthPostProcessFilter() {
           hdr_merge_gain_2_ != -1) {
         auto hdr_merge_filter = filter->as<ob::HdrMerge>();
         hdr_merge_filter->enable(true);
-        RCLCPP_INFO_STREAM(logger_, "Set HDR merge filter params: "
-                                        << "exposure_1: " << hdr_merge_exposure_1_
-                                        << ", gain_1: " << hdr_merge_gain_1_
-                                        << ", exposure_2: " << hdr_merge_exposure_2_
-                                        << ", gain_2: " << hdr_merge_gain_2_);
+        RCLCPP_INFO_STREAM(
+            logger_, "Set HDR merge filter params: " << "exposure_1: " << hdr_merge_exposure_1_
+                                                     << ", gain_1: " << hdr_merge_gain_1_
+                                                     << ", exposure_2: " << hdr_merge_exposure_2_
+                                                     << ", gain_2: " << hdr_merge_gain_2_);
         auto config = OBHdrConfig();
         config.enable = true;
         config.exposure_1 = hdr_merge_exposure_1_;
@@ -3017,15 +3018,38 @@ void OBCameraNode::onNewFrameCallback(const std::shared_ptr<ob::Frame> &frame,
     auto depth_scale = video_frame->as<ob::DepthFrame>()->getValueScale();
     image = image * depth_scale;
   }
-  sensor_msgs::msg::Image::UniquePtr image_msg(new sensor_msgs::msg::Image());
 
-  cv_bridge::CvImage(std_msgs::msg::Header(), encoding_[stream_index], image)
-      .toImageMsg(*image_msg);
-  CHECK_NOTNULL(image_msg.get());
-  image_msg->header.stamp = timestamp;
-  image_msg->is_bigendian = false;
-  image_msg->step = width * unit_step_size_[stream_index];
-  image_msg->header.frame_id = frame_id;
+  sensor_msgs::msg::Image::UniquePtr image_msg(new sensor_msgs::msg::Image());
+  if (stream_index == COLOR) {
+    /* - CUSTOM - */
+    image_msg->header = std_msgs::msg::Header();
+    image_msg->header.stamp = timestamp;
+    image_msg->header.frame_id = frame_id;
+
+    image_msg->width = width;
+    image_msg->height = height;
+    image_msg->encoding = "bgr8";
+    image_msg->is_bigendian = false;
+    image_msg->step = width * unit_step_size_[stream_index];
+    image_msg->data.resize(image_msg->height * image_msg->step);
+
+    // Convert RGB to BGR
+    for (size_t i = 0; i < image_msg->data.size(); i += 3) {
+      image_msg->data[i + 0] = image.data[i + 2];  // B
+      image_msg->data[i + 1] = image.data[i + 1];  // G
+      image_msg->data[i + 2] = image.data[i + 0];  // R
+    }
+    /* END CUSTOM */
+  } else {
+    cv_bridge::CvImage(std_msgs::msg::Header(), encoding_[stream_index], image)
+        .toImageMsg(*image_msg);
+    CHECK_NOTNULL(image_msg.get());
+    image_msg->header.stamp = timestamp;
+    image_msg->is_bigendian = false;
+    image_msg->step = width * unit_step_size_[stream_index];
+    image_msg->header.frame_id = frame_id;
+  }
+
   CHECK(image_publishers_.count(stream_index) > 0);
   saveImageToFile(stream_index, image, *image_msg);
   image_publishers_[stream_index]->publish(std::move(image_msg));
@@ -3704,11 +3728,11 @@ void OBCameraNode::setFilterCallback(const std::shared_ptr<SetFilter ::Request> 
         config.gain_2 = request->filter_param[3];
         device_->setStructuredData(OB_STRUCT_DEPTH_HDR_CONFIG,
                                    reinterpret_cast<const uint8_t *>(&config), sizeof(config));
-        RCLCPP_INFO_STREAM(logger_, "Set HDR merge filter params: "
-                                        << "\nexposure_1: " << request->filter_param[0]
-                                        << "\ngain_1: " << request->filter_param[1]
-                                        << "\nexposure_2: " << request->filter_param[2]
-                                        << "\ngain_2: " << request->filter_param[3]);
+        RCLCPP_INFO_STREAM(
+            logger_, "Set HDR merge filter params: " << "\nexposure_1: " << request->filter_param[0]
+                                                     << "\ngain_1: " << request->filter_param[1]
+                                                     << "\nexposure_2: " << request->filter_param[2]
+                                                     << "\ngain_2: " << request->filter_param[3]);
       } else {
         response->message =
             "The filter switch setting is successful, but the filter parameter setting fails";

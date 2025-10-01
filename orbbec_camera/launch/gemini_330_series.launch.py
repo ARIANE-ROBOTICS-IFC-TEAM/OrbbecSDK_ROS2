@@ -267,6 +267,9 @@ def generate_launch_description():
         DeclareLaunchArgument('laser_index0_ir_brightness', default_value='60'),
         DeclareLaunchArgument('laser_index0_ir_ae_max_exposure', default_value='30000'),
         DeclareLaunchArgument('show_fps_enable', default_value='false'),
+        
+        # HACK to make compressed images work, as jpeg trigers an OOM error :)
+        DeclareLaunchArgument('.color.image_raw.format', default_value='png'),
     ]
 
     def get_params(context, args):

@@ -23,16 +23,23 @@
 #include <NvV4l2Element.h>
 #include <NvJpegDecoder.h>
 #include <NvV4l2Element.h>
+#include <nvbufsurface.h>
+#include <nvbufsurftransform.h>
+#include <NvBufSurface.h>
 
 namespace orbbec_camera {
+
 class JetsonNvJPEGDecoder : public JPEGDecoder {
  public:
   JetsonNvJPEGDecoder(int width, int height);
   ~JetsonNvJPEGDecoder() override;
 
-  bool decode(const std::shared_ptr<ob::ColorFrame>& frame, uint8_t* dest) override;
+  bool decode(const std::shared_ptr<ob::ColorFrame> &frame, uint8_t *dest) override;
 
  private:
-  NvJPEGDecoder* decoder_;
+  NvJPEGDecoder *decoder_;
+  int rgba_fd_;
+  NvBufSurf::NvCommonTransformParams transform_params_;
 };
+
 }  // namespace orbbec_camera
