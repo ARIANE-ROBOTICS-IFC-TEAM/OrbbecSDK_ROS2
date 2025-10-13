@@ -11,7 +11,7 @@ def generate_launch_description() -> LaunchDescription:
     launch_file_dir = os.path.join(package_dir, "launch")
 
     width = "640"
-    height = "480"
+    height = "400"
     fps = "15"
 
     launch1_include = IncludeLaunchDescription(
@@ -19,7 +19,7 @@ def generate_launch_description() -> LaunchDescription:
             os.path.join(launch_file_dir, "gemini_330_series.launch.py")
         ),
         launch_arguments={
-            "enumerate_net_device": "false",
+            "enumerate_net_device": "true",
             "camera_name": "camera_01",
             "net_device_ip": "192.168.10.101",
             "net_device_port": "8090",
@@ -46,7 +46,7 @@ def generate_launch_description() -> LaunchDescription:
             os.path.join(launch_file_dir, "gemini_330_series.launch.py")
         ),
         launch_arguments={
-            "enumerate_net_device": "false",
+            "enumerate_net_device": "true",
             "camera_name": "camera_02",
             "net_device_ip": "192.168.10.102",
             "net_device_port": "8090",
@@ -73,7 +73,7 @@ def generate_launch_description() -> LaunchDescription:
             os.path.join(launch_file_dir, "gemini_330_series.launch.py")
         ),
         launch_arguments={
-            "enumerate_net_device": "false",
+            "enumerate_net_device": "true",
             "camera_name": "camera_03",
             "net_device_ip": "192.168.10.103",
             "net_device_port": "8090",
@@ -100,7 +100,7 @@ def generate_launch_description() -> LaunchDescription:
             os.path.join(launch_file_dir, "gemini_330_series.launch.py")
         ),
         launch_arguments={
-            "enumerate_net_device": "false",
+            "enumerate_net_device": "true",
             "camera_name": "camera_04",
             "net_device_ip": "192.168.10.104",
             "net_device_port": "8090",
