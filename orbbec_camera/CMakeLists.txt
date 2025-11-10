@@ -176,7 +176,7 @@ add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 ament_target_dependencies(${PROJECT_NAME} ${dependencies})
 target_include_directories(${PROJECT_NAME} PUBLIC ${COMMON_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${COMMON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${COMMON_LIBRARIES} OpenSSL::Crypto)
 
 rclcpp_components_register_node(
     ${PROJECT_NAME} PLUGIN "orbbec_camera::OBCameraNodeDriver" EXECUTABLE orbbec_camera_node
@@ -260,6 +260,6 @@ endif()
 
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
-ament_export_dependencies(${dependencies} ${ORBBEC_LIBS})
+ament_export_dependencies(${dependencies} ${ORBBEC_LIBS} OpenSSL)
 
 ament_package()
