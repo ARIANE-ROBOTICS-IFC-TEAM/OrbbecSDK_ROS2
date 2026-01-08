@@ -101,7 +101,7 @@ Stephen Brawner (brawner@gmail.com)
           izz="4.8408E-09" />
       </inertial>
     </link>
-    <joint name="{name}_depth_frame_Joint"
+    <joint name="{name}_depth_frame_joint"
       type="fixed">
       <origin
         xyz="0 0 0"
@@ -113,7 +113,7 @@ Stephen Brawner (brawner@gmail.com)
       <axis
         xyz="0 0 0" />
     </joint>
-    <joint name="base_Joint"
+    <joint name="base_joint"
       type="fixed">
       <origin
         xyz="-0.034005 -0.0475 -0.014048"
@@ -164,7 +164,7 @@ Stephen Brawner (brawner@gmail.com)
         </geometry>
       </collision>
     </link>
-    <joint name="{name}_right_ir_Joint"
+    <joint name="{name}_right_ir_joint"
       type="fixed">
       <origin
         xyz="0 -0.095 0"
@@ -215,7 +215,7 @@ Stephen Brawner (brawner@gmail.com)
         </geometry>
       </collision>
     </link>
-    <joint name="{name}_left_ir_Joint"
+    <joint name="{name}_left_ir_joint"
       type="fixed">
       <origin
         xyz="0 0 0"
@@ -266,7 +266,7 @@ Stephen Brawner (brawner@gmail.com)
         </geometry>
       </collision>
     </link>
-    <joint name="{name}_color_Joint"
+    <joint name="{name}_color_joint"
       type="fixed">
       <origin
         xyz="9e-06 -0.02375 0"
@@ -317,7 +317,7 @@ Stephen Brawner (brawner@gmail.com)
         </geometry>
       </collision>
     </link>
-    <joint name="{name}_imu_Joint"
+    <joint name="{name}_imu_joint"
       type="fixed">
       <origin
         xyz="-0.014248 -0.01131 -0.00069"
