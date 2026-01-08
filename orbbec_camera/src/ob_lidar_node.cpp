@@ -49,11 +49,11 @@ OBLidarNode::OBLidarNode(rclcpp::Node *node, std::shared_ptr<ob::Device> device,
   stream_name_[ACCEL] = "accel";
   stream_name_[GYRO] = "gyro";
   setupTopics();
-#if defined(USE_RK_HW_DECODER)
-  jpeg_decoder_ = std::make_unique<RKJPEGDecoder>(width_[COLOR], height_[COLOR]);
-#elif defined(USE_NV_HW_DECODER)
-  jpeg_decoder_ = std::make_unique<JetsonNvJPEGDecoder>(width_[COLOR], height_[COLOR]);
-#endif
+// #if defined(USE_RK_HW_DECODER)
+//   jpeg_decoder_ = std::make_unique<RKJPEGDecoder>(width_[COLOR], height_[COLOR]);
+// #elif defined(USE_NV_HW_DECODER)
+//   jpeg_decoder_ = std::make_unique<JetsonNvJPEGDecoder>(width_[COLOR], height_[COLOR]);
+// #endif
   is_camera_node_initialized_ = true;
 }
 
